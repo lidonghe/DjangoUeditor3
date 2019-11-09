@@ -12,6 +12,8 @@ from django.utils import six
 from django.utils.six.moves.urllib.request import urlopen
 from django.utils.six.moves.urllib.parse import urljoin
 
+import oss2
+
 
 if six.PY3:
     long = int
@@ -32,14 +34,18 @@ def get_path_format_vars():
 
 
 def save_upload_file(PostFile, FilePath):
-    try:
-        f = open(FilePath, 'wb')
-        for chunk in PostFile.chunks():
-            f.write(chunk)
-    except Exception as E:
-        f.close()
-        return u"写入文件错误: {}".format(E.message)
-    f.close()
+    # try:
+    #     f = open(FilePath, 'wb')
+    #     for chunk in PostFile.chunks():
+    #         f.write(chunk)
+    # except Exception as E:
+    #     f.close()
+    #     return u"写入文件错误: {}".format(E.message)
+    # f.close()
+    auth = oss2.Auth('LTAI4FhZhQ5WuAmVBWZykZ4P', 'NKdseM5IWnb0QSlYoTBkokGAMNeV14')
+    # Endpoint以杭州为例，其它Region请按实际情况填写。
+    bucket = oss2.Bucket(auth, 'http://oss-cn-beijing.aliyuncs.com', 'yhtj')
+    result = bucket.put_object(FilePath, PostFile)
     return u"SUCCESS"
 
 
